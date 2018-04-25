@@ -9,15 +9,16 @@
 import UIKit
 
 class ClockView: UIView {
- 
-    let x0:CGFloat=0
-    let y0:CGFloat=100
-    
-    func convertTime(hour:Int, min:Int, sec:Int, msec:Int) -> (percent:Double, hour:Int, min:Int, sec:Int){
-        let current:Int = hour*3600000+min*60000+sec*1000+msec
-        let percent:Double = Double(current) / Double(86400000)
-        let fsec:Int = Int(65536*percent)
-        return (percent, fsec/(64*64), fsec%(64*64)/64, fsec%64)
+
+    var hourAngle: CGFloat=0
+    var minAngle: CGFloat=0
+    var secAngle: CGFloat=0
+
+    func update(hourAngle:Double, minAngle:Double, secAngle:Double){
+        self.hourAngle=CGFloat(hourAngle)
+        self.minAngle=CGFloat(minAngle)
+        self.secAngle=CGFloat(secAngle)
+        self.setNeedsDisplay()
     }
     
     // Only override draw() if you perform custom drawing.
@@ -26,17 +27,9 @@ class ClockView: UIView {
         // Drawing code
         if let context = UIGraphicsGetCurrentContext() {
             drawFrame(context: context)
-            // get current time
-            let date=Date()
-            let calendar=Calendar.current
-            let (percent,hour,min,sec)=convertTime(
-                hour: calendar.component(.hour, from: date),
-                min: calendar.component(.minute, from: date),
-                sec: calendar.component(.second, from: date),
-                msec: calendar.component(.nanosecond, from: date)/1000000
-            )
-            //print("F Clock reads:",hour,min,sec)
-            drawTime(context:context, percent:percent, hour:hour, min:min, sec:sec)
+            drawHand(context: context, length:0.6, angle:hourAngle)
+            drawHand(context: context, length:0.8, angle:minAngle)
+            drawHand(context: context, length:1.0, angle:secAngle)
         }
     }
 
@@ -51,35 +44,13 @@ class ClockView: UIView {
         context.strokePath()
     }
     
-    func drawTime(context:CGContext, percent:Double, hour:Int, min:Int, sec:Int){
+    func drawHand(context:CGContext, length:CGFloat, angle:CGFloat) {
         let cx=self.frame.size.width/2.0
         let cy=self.frame.size.height/2.0
         let r=cx/2.0
-        
-        // draw hour
         context.move(to: CGPoint(x: cx, y: cy))
-        var to=hand(cx: cx, cy: cy, radius: r*0.6, percent: percent)
-        context.addLine(to: to)
+        context.addLine(to: CGPoint(x: cx+r*sin(angle), y: cy-r*cos(angle)))
         context.setLineWidth(2)
         context.strokePath()
-        
-        // draw min
-        context.move(to: CGPoint(x: cx, y: cy))
-        to=hand(cx: cx, cy: cy, radius: r*0.8, percent: Double(min)/64.0)
-        context.addLine(to: to)
-        context.setLineWidth(2)
-        context.strokePath()
-
-        // draw sec
-        context.move(to: CGPoint(x: cx, y: cy))
-        to=hand(cx: cx, cy: cy, radius: r, percent: Double(sec)/64.0)
-        context.addLine(to: to)
-        context.setLineWidth(2)
-        context.strokePath()                
-    }
-    
-    func hand(cx:CGFloat, cy:CGFloat, radius:CGFloat, percent:Double) -> CGPoint {
-        let a=CGFloat(percent)*(.pi*2)
-        return CGPoint(x:cx+radius*sin(a), y:cy-radius*cos(a))
     }
 }
