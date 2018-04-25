@@ -47,7 +47,7 @@ class ClockView: UIView {
     func drawHand(context:CGContext, length:CGFloat, angle:CGFloat) {
         let cx=self.frame.size.width/2.0
         let cy=self.frame.size.height/2.0
-        let r=cx/2.0
+        let r=cx/2.0 * length
         context.move(to: CGPoint(x: cx, y: cy))
         context.addLine(to: CGPoint(x: cx+r*sin(angle), y: cy-r*cos(angle)))
         context.setLineWidth(2)
