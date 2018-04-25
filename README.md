@@ -1,5 +1,5 @@
 # FClock
-This is one of a series life app for an imaginary *F Empire*, where **people use hexadecimal**. In F Empire:
+This is one of a series of life apps for an imaginary *F Empire*, where **people use hexadecimal**. In F Empire:
 1. one day has 10 (or 16 in decimal) hours 
 2. one hour has 40 (or 64 in decimal) minutes
 3. one minute has 40 (or 64 in decimal) seconds
