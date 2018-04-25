@@ -18,17 +18,17 @@ class ViewController: UIViewController {
     var timer=Timer()
     
     func scheduleTimer() {
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { (void) in
+        Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) { (void) in
             // draw DClock and DLabel
             var (hour,min,sec,msec)=self.currentTime()
             var (hourAngle,minAngle,secAngle)=self.timeToAngle(hour:hour, min:min, sec:sec, hex:false)
             self.dclockView.update(hourAngle: hourAngle, minAngle: minAngle, secAngle: secAngle)
-            self.dclockLabel.text=String(format:"Decimal Time: %02d:%02d.%02d", hour,min,sec)
+            self.dclockLabel.text=String(format:"Menial Decimal Time: %02d:%02d.%02d", hour,min,sec)
             // draw FClock and FLabel
             (hour,min,sec)=self.timeToF(hour: hour, min: min, sec: sec, msec: msec)
             (hourAngle,minAngle,secAngle)=self.timeToAngle(hour:hour, min:min, sec:sec, hex:true)
             self.fclockView.update(hourAngle: hourAngle, minAngle: minAngle, secAngle: secAngle)
-            self.fclockLabel.text=String(format:"Time: %02X:%02X.%02X", hour,min,sec)
+            self.fclockLabel.text=String(format:"Glory F Time: %02X:%02X.%02X", hour,min,sec)
         }
         timer.fire()
     }
