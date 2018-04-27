@@ -65,10 +65,47 @@ class ViewController: UIViewController {
         }
     }
     
+    func layoutSubviews(size: CGSize=CGSize.zero){
+        print("layoutSubviews: ",size)
+        let realSize=(size==CGSize.zero ? view.frame.size : size)
+        var r:CGFloat=0
+        if UIInterfaceOrientationIsPortrait(UIApplication.shared.statusBarOrientation) {
+            // for portrait, W<H
+            print("Portrait: ", realSize.width, realSize.height, view.frame.size)
+            r=min(realSize.width, realSize.height*0.5)
+            r*=0.9
+            fclockView.frame.size=CGSize(width: r, height: r)
+            fclockView.center=CGPoint(x: realSize.width*0.5, y: realSize.height*0.25)
+            dclockView.frame.size=CGSize(width: r, height: r)
+            dclockView.center=CGPoint(x: realSize.width*0.5, y: realSize.height*0.75)
+        }else {
+            // for landscape, W>H
+            print("Landscape: ", realSize.width, realSize.height)
+            r=min(realSize.height, realSize.width*0.5)
+            r*=0.9
+            fclockView.frame.size=CGSize(width: r, height: r)
+            fclockView.center=CGPoint(x: realSize.width*0.25, y: realSize.height*0.5)
+            dclockView.frame.size=CGSize(width: r, height: r)
+            dclockView.center=CGPoint(x: realSize.width*0.75, y: realSize.height*0.5)
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        layoutSubviews()
         scheduleTimer()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(forName: NSNotification.Name.UIDeviceOrientationDidChange, object: nil, queue: nil) {
+            (note: Notification) in
+            self.layoutSubviews()
+        }
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.UIDeviceOrientationDidChange, object: nil)
     }
     
     override func didReceiveMemoryWarning() {
